@@ -1,187 +1,57 @@
-# 🎓 CampusFind – One Platform, Every Campus
-### Multi-College Lost & Found Management System
+# CampusFind – One Platform, Every Campus
+### Multi-College Lost and Found Management System
 
-[![React](https://img.shields.io/badge/React-19.0-blue?logo=react)](https://reactjs.org/)
-[![Vite](https://img.shields.io/badge/Vite-8.3-646CFF?logo=vite)](https://vitejs.dev/)
-[![TailwindCSS](https://img.shields.io/badge/TailwindCSS-v4.3-38B2AC?logo=tailwind-css)](https://tailwindcss.com/)
-[![PHP](https://img.shields.io/badge/PHP-8.2+-777BB4?logo=php)](https://www.php.net/)
-[![MySQL](https://img.shields.io/badge/MySQL-8.0+-4479A1?logo=mysql)](https://www.mysql.com/)
-[![License](https://img.shields.io/badge/License-Apache_2.0-green.svg)](LICENSE)
-
-**CampusFind** is a centralized, secure Lost and Found Management Platform connecting students, security desks, and faculty administrators across multiple universities and engineering colleges (e.g., *D.Y. Patil College of Engineering (Akurdi)*, *PCCOE*, *MIT-WPU*, and *COEP Technological University*).
-
----
-
-## 📌 Problem Statement
-Across college campuses, dozens of valuables—scientific calculators, laptop chargers, earbuds, student ID cards, wallets, and backpacks—are misplaced every week. Traditional solutions rely on chaotic WhatsApp batch groups or physical notice boards where notices get buried within hours and false claims are common.
-
-**CampusFind solves this by:**
-- Enforcing **college-wise data separation** via `college_id` in the database.
-- Protecting student privacy by **redacting sensitive contact details and roll numbers** from public listings.
-- Automating recovery with a **rule-based Smart Matching Engine**.
-- Ensuring verified chain of custody where **college admins verify proof before in-person handover**.
-
----
-
-## ✨ Key Features
-
-### 🏛️ Multi-College Isolation
-- Every university operates with its own isolated records, student roster, item listings, and claims pipeline.
-- Backend authorization prevents students from accessing another college's private data.
-- Optional **Global Inter-College Search** allows students to search participating institutions without exposing sensitive personal information.
-
-### 👥 Access Architecture
-1. **Separate Admin Portal:** Dedicated, single-credential administrator console to approve/reject college registrations, activate or deactivate institutions, verify ownership claims, moderate items, manage categories, and resolve complaints.
-2. **Student Portal:** Students register with their college email, roll number, and password to report lost/found items, receive smart-match notifications, submit ownership claims, and track recovery status.
-
-### ⚡ Rule-Based Smart Matching Engine
-- Automatically compares lost and found reports within the same campus.
-- Scoring criteria:
-  - **Category Match:** +35 points
-  - **Keyword Overlap (Title & Description):** +15 to +45 points
-  - **Campus Vicinity:** +20 points
-  - **Date Proximity (within 4 days):** +15 points
-- When confidence reaches &ge; 40%, both students receive in-app notifications and a side-by-side comparison modal.
-
-### 📋 Secure Ownership Claim Workflow
-1. Student views found item & clicks **Claim Item**.
-2. Student provides private distinguishing details (scratches, lock screen, sticker, serial number) and optional proof of purchase/receipt.
-3. College Admin reviews proof and approves or rejects the claim.
-4. Student visits security office with College ID card for verified physical handover.
-5. Admin marks item as **Returned** (with celebratory confetti!).
+CampusFind is a centralized, secure Lost and Found Management System connecting students, security desks, and college administrators across multiple institutions (e.g. D.Y. Patil College of Engineering, PCCOE, MIT-WPU, COEP Technological University).
 
 ---
 
 ## 🛠️ Technology Stack
-
-| Layer | Technologies |
-|---|---|
-| **Frontend** | React 19, TypeScript, Tailwind CSS v4, Lucide Icons, Canvas Confetti |
-| **Build Tool** | Vite 8, `gh-pages` |
-| **Backend (Optional Native PHP)** | PHP 8.2+, PDO with Prepared Statements, Secure Sessions |
-| **Database** | MySQL 8.0+ / MariaDB 10.4+ (`campusfind_db.sql`) |
-| **Environment** | XAMPP / WAMP / Apache for PHP/MySQL; GitHub Pages for Static React Frontend |
+- **Frontend:** HTML5, CSS3, JavaScript, Bootstrap 5, Poppins Google Font, Font Awesome
+- **Backend:** PHP 8+, PDO with Prepared Statements, Secure Sessions, BCrypt Password Hashing
+- **Database:** MySQL 8.0+ / MariaDB 10.4+ (`campusfind_db`)
+- **Environment:** XAMPP, WAMP, or Apache/MySQL on Linux/macOS/Windows
 
 ---
 
-## 🗄️ Database Architecture (`campusfind_db.sql`)
+## 🚀 How to Run Locally with XAMPP
 
-The database consists of **10 interconnected relational tables** with foreign keys, indexes, and timestamps:
+### Step 1: Start XAMPP
+1. Open the **XAMPP Control Panel**.
+2. Click **Start** for **Apache**.
+3. Click **Start** for **MySQL**.
 
+### Step 2: Import Database in phpMyAdmin
+1. Open your browser and navigate to: `http://localhost/phpmyadmin/`
+2. Click on **New** on the left menu and create database name: `campusfind_db`
+3. Click on the **Import** tab.
+4. Click **Choose File** and select `database/campusfind_db.sql`.
+5. Click **Import** at the bottom.
+6. All 10 tables (`colleges`, `users`, `categories`, `items`, `lost_items`, `found_items`, `claims`, `notifications`, `feedback`, `complaints`) and realistic seed data will be imported!
+
+### Step 3: Copy Code into htdocs
+Copy this entire `campusfind` directory to:
 ```
-colleges
-  ├── users (FK: college_id)
-  ├── items (FK: college_id, user_id, category_id)
-  │     ├── lost_items (FK: item_id)
-  │     ├── found_items (FK: item_id)
-  │     └── claims (FK: item_id, claimant_user_id, college_id)
-  ├── notifications (FK: user_id, college_id)
-  ├── complaints (FK: user_id, college_id)
-  └── feedback (FK: user_id, college_id)
+C:\xampp\htdocs\campusfind\
 ```
 
----
-
-## 🚀 How to Run Locally
-
-### 1. Run the React Web App (Vite Dev Server)
-```bash
-# Clone the repository
-git clone https://github.com/your-username/campusfind.git
-cd campusfind
-
-# Install dependencies
-npm install
-
-# Start local dev server
-npm run dev
+### Step 4: Verify Database Connection
+Check `config/database.php`. Standard XAMPP defaults are:
+```php
+define('DB_HOST', 'localhost');
+define('DB_USER', 'root');
+define('DB_PASS', '');
+define('DB_NAME', 'campusfind_db');
 ```
-Open [http://localhost:3000](http://localhost:3000) in your browser.
 
----
-
-### 2. Run the PHP & MySQL Backend with XAMPP
-
-1. **Start Apache and MySQL** in XAMPP Control Panel.
-2. Open **phpMyAdmin**: [http://localhost/phpmyadmin/](http://localhost/phpmyadmin/).
-3. Create a new database named **`campusfind_db`**.
-4. Go to **Import** tab &rarr; choose `campusfind/database/campusfind_db.sql` &rarr; click **Import**.
-5. Copy the `campusfind` folder to your XAMPP web root:
-   ```
-   C:\xampp\htdocs\campusfind\
-   ```
-6. Open in your browser:
-   ```
-   http://localhost/campusfind/
-   ```
-
----
-
-## 🌐 Deploy to GitHub Pages (No Blank Page!)
-
-This repository is pre-configured with `base: './'`, `.nojekyll`, and `404.html` so you won't get a blank screen on GitHub Pages.
-
-### Option A: 1-Command Deploy (Recommended)
-```bash
-npm run deploy
+### Step 5: Launch Website
+Open your browser and navigate to:
 ```
-*In GitHub repository &rarr; **Settings** &rarr; **Pages**, set **Branch: `gh-pages`** and folder: **`/ (root)`**.*
-
-### Option B: Automatic GitHub Actions
-1. Push code to `main`:
-   ```bash
-   git add .
-   git commit -m "Deploy to GitHub Pages"
-   git push origin main
-   ```
-2. In GitHub repository &rarr; **Settings** &rarr; **Pages** &rarr; **Source**: select **GitHub Actions**.
-
-### Option C: Deploy via `/docs` Folder
-```bash
-npm run build:docs
-git add docs/
-git commit -m "Build docs for GitHub Pages"
-git push origin main
-```
-*In GitHub repository &rarr; **Settings** &rarr; **Pages**, set **Branch: `main`** and folder: **`/docs`**.*
-
----
-
-## 🔐 Authentication & Portals
-
-- **Student Registration & Login:** Students create their own accounts via **Register** with their college selection and password, then sign in via **Student Log In**.
-- **Separate Admin Portal:** Accessed via the **Admin Portal** button in the navigation bar (or `/campusfind/admin-login.php` in the PHP version), protected by a single dedicated Admin ID and Password.
-
----
-
-## 📁 Repository Directory Structure
-
-```
-├── .github/workflows/deploy.yml   # Automatic GitHub Pages CI/CD
-├── campusfind/                    # Native PHP 8+ & MySQL Deliverables
-│   ├── config/database.php        # Secure PDO connection config
-│   ├── includes/auth.php          # Session security & role verification
-│   ├── includes/functions.php     # Smart matching algorithm & XSS escaping
-│   ├── database/campusfind_db.sql # Full 10-table MySQL DDL + sample seeds
-│   ├── index.php                  # PHP landing page
-│   ├── login.php                  # Student authentication
-│   ├── admin-login.php            # Separate single-ID Admin Portal login
-│   ├── register.php               # Student registration with college select
-│   └── college-register.php       # Institution registration (status: pending)
-├── docs/                          # Pre-built static site for GitHub Pages
-├── public/                        # Static assets, .nojekyll, and 404.html
-├── src/
-│   ├── components/                # Navbar, Footer, ItemCard, Modals
-│   ├── context/                   # AuthContext with safe storage fallbacks
-│   ├── data/                      # Initial seed datasets
-│   ├── pages/                     # Home, Lost, Found, Dashboards
-│   ├── services/storage.ts        # Business logic & Smart Match algorithm
-│   └── types/index.ts             # TypeScript definitions
-├── package.json                   # Scripts (dev, build, build:docs, deploy)
-└── vite.config.ts                 # Configured with base: './'
+http://localhost/campusfind/
 ```
 
 ---
 
-## 📄 License
-This project is open-source under the [Apache-2.0 License](LICENSE).
+## 🔐 Authentication & Access
+
+- **Student Accounts:** Students register their own accounts via `/campusfind/register.php` by selecting an approved college and setting a password, then sign in at `/campusfind/login.php`.
+- **Separate Admin Portal:** Platform administration is accessible exclusively via `/campusfind/admin-login.php` using the single administrator ID and password to oversee college approvals, claims verification, item moderation, and complaints.
